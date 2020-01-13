@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+.header-height {
+  height: 8vh;
+}
+.header-logo {
+  font-size: 35px;
+}
+.header-name {
+  font-size: 35px;
+}
+.image-contain {
+  height: 60%;
+  object-fit: contain;
+}
+.card-width {
+  width: 30%;
+}
+.text-price {
+  color: grey;
+}
