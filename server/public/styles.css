@@ -1,0 +1,30 @@
+.header-height {
+  height: 8vh;
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  color: white;
+  margin-left: 20px;
+  margin-right: 5px;
+  font-weight: bold;
+  font-size: 35px;
+}
+.header-name {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 35px;
+}
+.image-contain {
+  height: 60%;
+  object-fit: contain;
+}
+.text-price {
+  color: grey;
+}
+.text-short-description {
+  height: 30%;
+  overflow: hidden;
+}
