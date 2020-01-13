@@ -32,7 +32,6 @@ app.get('/api/products/:productId', (req, res, next) => {
   const productId = req.params.productId;
   if (productId.match(/\D/) || parseInt(productId, 10) < 1) {
     next(new ClientError(`productId=${productId} is not positive integer`, 400));
-    return false;
   }
   db.query(sql, [parseInt(productId, 10)])
     .then(result => {
