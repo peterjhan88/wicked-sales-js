@@ -7,6 +7,7 @@ const staticMiddleware = require('./static-middleware');
 const sessionMiddleware = require('./session-middleware');
 
 const app = express();
+const jsonParserMiddleware = express.json();
 
 app.use(staticMiddleware);
 app.use(sessionMiddleware);
@@ -22,6 +23,22 @@ app.get('/api/health-check', (req, res, next) => {
 app.get('/api/products', (req, res, next) => {
   db.query('select "productId", "name", "price", "image", "shortDescription" from "products"')
     .then(result => res.json(result.rows))
+    .catch(err => next(err));
+});
+
+app.use(jsonParserMiddleware);
+app.get('/api/products/:productId', (req, res, next) => {
+  const sql = 'select * from "products" where "productId"=$1';
+  const productId = req.params.productId;
+  if (productId.match(/\D/) || parseInt(productId, 10) < 1) {
+    next(new ClientError(`productId=${productId} is not positive integer`, 400));
+  }
+  db.query(sql, [parseInt(productId, 10)])
+    .then(result => {
+      result.rows.length === 0
+        ? next(new ClientError(`productId=${productId} not found`, 404))
+        : res.json(result.rows[0]);
+    })
     .catch(err => next(err));
 });
 
