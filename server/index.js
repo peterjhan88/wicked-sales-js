@@ -20,7 +20,7 @@ app.get('/api/health-check', (req, res, next) => {
 });
 
 app.get('/api/products', (req, res, next) => {
-  db.query('select * from "products"')
+  db.query('select "productId", "name", "price", "image", "shortDescription" from "products"')
     .then(result => res.json(result.rows))
     .catch(err => next(err));
 });
