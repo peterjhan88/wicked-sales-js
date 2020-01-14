@@ -7,7 +7,6 @@ const staticMiddleware = require('./static-middleware');
 const sessionMiddleware = require('./session-middleware');
 
 const app = express();
-const jsonParserMiddleware = express.json();
 
 app.use(staticMiddleware);
 app.use(sessionMiddleware);
@@ -26,7 +25,6 @@ app.get('/api/products', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.use(jsonParserMiddleware);
 app.get('/api/products/:productId', (req, res, next) => {
   const sql = 'select * from "products" where "productId"=$1';
   const productId = req.params.productId;

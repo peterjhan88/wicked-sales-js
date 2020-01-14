@@ -25,6 +25,15 @@
   color: grey;
 }
 .text-short-description {
-  height: 30%;
   overflow: hidden;
+}
+
+.back-to-catalog {
+  height: 30px;
+  font-size: 20px;
+  color: grey;
+}
+.image-detail {
+  width: 400px;
+  height: 400px;
 }

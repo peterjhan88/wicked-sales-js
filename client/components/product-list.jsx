@@ -29,14 +29,15 @@ export default class ProductList extends React.Component {
           key={product.productId}
           productId={product.productId}
           imgUrl={product.image}
-          productName={product.name}
+          name={product.name}
           price={product.price}
           shortDescription={product.shortDescription}
+          onClick={this.props.setView}
         />
       );
     });
     return (
-      <div className='row d-flex flex-wrap justify-content-center bg-light'>
+      <div className='row flex-wrap justify-content-around px-3 py-3 bg-light col-12'>
         {allProducts}
       </div>
     );
