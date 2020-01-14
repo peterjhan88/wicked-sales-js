@@ -15,7 +15,7 @@ export default class ProductListItem extends React.Component {
 
   render() {
     return (
-      <div className='col-md-3 my-3 mx-3 d-flex align-items-center card overflow-hidden' onClick={this.handleClick}>
+      <div className='col-md-3 my-3 mx-3 pt-3 d-flex align-items-center card overflow-hidden' onClick={this.handleClick}>
         <img src={this.props.imgUrl} alt="product Image" className='card-img-top image-contain' />
         <div className='card-body'>
           <h3 className='card-title'>{this.props.name}</h3>
