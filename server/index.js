@@ -26,16 +26,106 @@ app.get('/api/products', (req, res, next) => {
 });
 
 app.get('/api/products/:productId', (req, res, next) => {
-  const sql = 'select * from "products" where "productId"=$1';
   const productId = req.params.productId;
   if (productId.match(/\D/) || parseInt(productId, 10) < 1) {
     next(new ClientError(`productId=${productId} is not positive integer`, 400));
   }
+  const sql = 'select * from "products" where "productId"=$1';
   db.query(sql, [parseInt(productId, 10)])
     .then(result => {
       result.rows.length === 0
-        ? next(new ClientError(`productId=${productId} not found`, 404))
+        ? next(new ClientError(`Product with productId=${productId} not found`, 404))
         : res.json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/cart', (req, res, next) => {
+  const sessionCartId = req.session.cartId;
+  if (sessionCartId) {
+    const joinSql = `
+        select  "c"."cartItemId",
+                "c"."price",
+                "p"."productId",
+                "p"."image",
+                "p"."name",
+                "p"."shortDescription"
+        from "cartItems" as "c"
+        join "products" as "p" using ("productId")
+        where "c"."cartId" = $1
+      `;
+    db.query(joinSql, [sessionCartId])
+      .then(joinedTableResult => {
+        res.status(200).json(joinedTableResult.rows);
+      })
+      .catch(err => next(err));
+  } else {
+    res.status(200).json([]);
+  }
+});
+
+app.post('/api/cart', (req, res, next) => {
+  const productId = req.body.productId;
+  if (productId.toString().match(/\D/) || productId < 1) {
+    next(new ClientError(`productId=${productId} is not positive integer`, 400));
+  }
+
+  const sql = 'select "price" from "products" where "productId"=$1';
+  db.query(sql, [productId])
+    .then(result => {
+      if (result.rows.length === 0) {
+        throw new ClientError(`Product with productId=${productId} not found`, 400);
+      }
+      if (req.session.cartId) {
+        const existingCart = {
+          cartId: req.session.cartId,
+          price: result.rows[0].price
+        };
+        return existingCart;
+      }
+      const cartsSql = `
+        insert into "carts" ("cartId", "createdAt")
+        values (default, default)
+        returning "cartId"
+      `;
+      return (
+        db.query(cartsSql)
+          .then(cartSqlResult => {
+            const cartIdAndPrice = {
+              cartId: cartSqlResult.rows[0].cartId,
+              price: result.rows[0].price
+            };
+            return cartIdAndPrice;
+          })
+      );
+    })
+    .then(cartIdAndPrice => {
+      req.session.cartId = cartIdAndPrice.cartId;
+      const cartItemsSql = `
+      insert into "cartItems" ("cartId", "productId", "price")
+      values ($1, $2, $3)
+      returning "cartItemId"
+      `;
+      return (
+        db.query(cartItemsSql, [cartIdAndPrice.cartId, productId, cartIdAndPrice.price])
+      );
+    })
+    .then(cartItemsResult => {
+      const joinSql = `
+        select  "c"."cartItemId",
+                "c"."price",
+                "p"."productId",
+                "p"."image",
+                "p"."name",
+                "p"."shortDescription"
+        from "cartItems" as "c"
+        join "products" as "p" using ("productId")
+        where "c"."cartItemId" = $1
+      `;
+      db.query(joinSql, [cartItemsResult.rows[0].cartItemId])
+        .then(joinedTableResult => {
+          res.status(201).json(joinedTableResult.rows[0]);
+        });
     })
     .catch(err => next(err));
 });
