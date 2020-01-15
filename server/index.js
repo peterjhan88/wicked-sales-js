@@ -122,11 +122,12 @@ app.post('/api/cart', (req, res, next) => {
         join "products" as "p" using ("productId")
         where "c"."cartItemId" = $1
       `;
-      db.query(joinSql, [cartItemsResult.rows[0].cartItemId])
-        .then(joinedTableResult => {
-          res.status(201).json(joinedTableResult.rows[0]);
-          return joinedTableResult;
-        });
+      return (
+        db.query(joinSql, [cartItemsResult.rows[0].cartItemId])
+          .then(joinedTableResult => {
+            res.status(201).json(joinedTableResult.rows[0]);
+          })
+      );
     })
     .catch(err => next(err));
 });
