@@ -132,6 +132,30 @@ app.post('/api/cart', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/orders', (req, res, next) => {
+  const cartId = req.session.cartId;
+  if (!cartId) {
+    throw new ClientError('Session does not have cart ID', 400);
+  }
+  const reqBody = req.body;
+  const missingColumns = missingFields(reqBody);
+  if (missingColumns) {
+    throw new ClientError(`Must have ${missingColumns} fields`, 400);
+  }
+
+  const ordersSql = `
+    insert into "orders" ("orderId", "cartId", "name", "creditCard", "shippingAddress", "createdAt")
+    values (default, $1, $2, $3, $4, default)
+    returning *
+  `;
+  db.query(ordersSql, [cartId, reqBody.name, reqBody.creditCard, reqBody.shippingAddress])
+    .then(result => {
+      delete req.session.cartId;
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
 app.use('/api', (req, res, next) => {
   next(new ClientError(`cannot ${req.method} ${req.originalUrl}`, 404));
 });
@@ -151,3 +175,16 @@ app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log('Listening on port', process.env.PORT);
 });
+
+function missingFields(reqBody) {
+  const requiredFields = ['creditCard', 'shippingAddress', 'name'];
+  var missing = [];
+  const reqBodyKeys = Object.keys(reqBody);
+  for (var index = 0; index < requiredFields.length; index++) {
+    const requiredField = requiredFields[index];
+    if (!reqBodyKeys.includes(requiredField)) {
+      missing.push(requiredField);
+    }
+  }
+  return missing.length === 0 ? null : missing.join(' ');
+}
