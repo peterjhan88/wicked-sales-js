@@ -37,3 +37,9 @@
   width: 400px;
   height: 400px;
 }
+
+.shopping-cart {
+  font-size: 35px;
+  color: white;
+  font-weight: bold;
+}
