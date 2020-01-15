@@ -125,6 +125,7 @@ app.post('/api/cart', (req, res, next) => {
       db.query(joinSql, [cartItemsResult.rows[0].cartItemId])
         .then(joinedTableResult => {
           res.status(201).json(joinedTableResult.rows[0]);
+          return joinedTableResult;
         });
     })
     .catch(err => next(err));
