@@ -93,3 +93,27 @@
 .cart-product-short-description {
   font-size: 20px;
 }
+
+.button-height {
+  height: 60px;
+}
+
+.order-total-price {
+  font-size: 30px;
+  font-weight: bold;
+  color: grey;
+}
+
+.order-input {
+  height: 50px;
+  font-size: 25px;
+}
+
+.order-textarea-address,
+.input-title {
+  font-size: 25px;
+}
+
+.input-title {
+  font-weight: bold;
+}
