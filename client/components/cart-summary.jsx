@@ -25,9 +25,12 @@ export default class CartSummary extends React.Component {
         {
           cartItems.length === 0
             ? <div className='empty-cart'>No Item to Display</div>
-            : <div>{cartItems}</div>
+            : <div className='d-flex justify-content-center flex-wrap'>{cartItems}</div>
         }
-        <div className='cart-total-price col-12 my-5 d-flex'>Item Total: ${(this.calculateTotal() / 100).toFixed(2)}</div>
+        <div className='row col-10 d-flex align-items-center'>
+          <div className='cart-total-price col-10 my-5 d-flex'>Item Total: ${(this.calculateTotal() / 100).toFixed(2)}</div>
+          <button className='btn btn-info button-height col-2' onClick={() => this.props.setView('checkout', {})}>Place Order</button>
+        </div>
       </div>
     );
   }
