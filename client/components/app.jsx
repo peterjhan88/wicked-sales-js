@@ -109,12 +109,16 @@ export default class App extends React.Component {
           setView={this.setView}
           placeOrder={this.placeOrder}
           orderTotal={this.state.cart.length === 0 ? 0 : this.state.cart.reduce((acc, item) => acc + item.price, 0)}
+          numberOfItemsInCart={this.state.cart.length}
         />
       );
     }
     return (
       <>
-        <Header cartItemCount={this.state.cart.length} setView={this.setView}/>
+        <Header
+          cartItemCount={this.state.cart.length}
+          setView={this.setView}
+        />
         { renderingElement }
       </>
     );

@@ -117,3 +117,22 @@
 .input-title {
   font-weight: bold;
 }
+
+.valid-input {
+  border: 5px solid green;
+}
+.invalid-input {
+  border: 5px solid crimson;
+}
+.valid-input-comment {
+  color: green;
+  font-weight: bold;
+}
+.invalid-input-comment {
+  color: crimson;
+  font-weight: bold;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
