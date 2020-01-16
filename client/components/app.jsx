@@ -10,7 +10,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       view: {
-        name: 'catalog',
+        name: 'cart',
         params: {}
       },
       cart: []
@@ -18,6 +18,7 @@ export default class App extends React.Component {
     this.setView = this.setView.bind(this);
     this.addToCart = this.addToCart.bind(this);
     this.placeOrder = this.placeOrder.bind(this);
+    this.removeItem = this.removeItem.bind(this);
   }
 
   setView(name, params) {
@@ -83,6 +84,24 @@ export default class App extends React.Component {
       });
   }
 
+  removeItem(cartItemId) {
+    fetch(`/api/cartItems/${cartItemId}`, { method: 'DELETE' })
+      .then(response => {
+        this.setState(previousState => {
+          var newCart = previousState.cart;
+          for (var index = 0; index < newCart.length; index++) {
+            if (newCart[index].cartItemId === cartItemId) {
+              newCart.splice(index, 1);
+            }
+          }
+          return { cart: newCart };
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
   componentDidMount() {
     this.getCartItems();
   }
@@ -101,7 +120,11 @@ export default class App extends React.Component {
       );
     } else if (this.state.view.name === 'cart') {
       renderingElement = (
-        <CartSummary cart={this.state.cart} setView={this.setView}/>
+        <CartSummary
+          cart={this.state.cart}
+          setView={this.setView}
+          removeItem={this.removeItem}
+        />
       );
     } else if (this.state.view.name === 'checkout') {
       renderingElement = (
