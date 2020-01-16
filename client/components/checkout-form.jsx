@@ -14,18 +14,18 @@ export default class CheckoutForm extends React.Component {
 
   handlePlaceOrder(event) {
     event.preventDefault();
-    if (this.goodToSubmit()) {
-      var orderDetails = {};
-      orderDetails.name = this.state.name;
-      orderDetails.creditCard = this.state.creditCard.replace(' ', '');
-      orderDetails.shippingAddress = this.state.shippingAddress;
-      this.props.placeOrder(orderDetails);
-      this.props.setView('catalog', {});
-      return true;
+    if (!this.goodToSubmit()) {
+      // eslint-disable-next-line no-console
+      console.log('Invalid Inputs! Either input values are invalid or no items in the cart!');
+      return false;
     }
-    // eslint-disable-next-line no-console
-    console.log('Invalid Inputs! Either input values are invalid or no items in the cart!');
-    return false;
+    var orderDetails = {};
+    orderDetails.name = this.state.name;
+    orderDetails.creditCard = this.state.creditCard.replace(' ', '');
+    orderDetails.shippingAddress = this.state.shippingAddress;
+    this.props.placeOrder(orderDetails);
+    this.props.setView('catalog', {});
+    return true;
   }
 
   handleChange(event) {
