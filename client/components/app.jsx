@@ -10,7 +10,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       view: {
-        name: 'catalog',
+        name: 'checkout',
         params: {}
       },
       cart: []
@@ -114,7 +114,10 @@ export default class App extends React.Component {
     }
     return (
       <>
-        <Header cartItemCount={this.state.cart.length} setView={this.setView}/>
+        <Header
+          cartItemCount={this.state.cart.length}
+          setView={this.setView}
+        />
         { renderingElement }
       </>
     );

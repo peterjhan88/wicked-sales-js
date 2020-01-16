@@ -33,7 +33,12 @@ export default class ProductDetails extends React.Component {
       : (
         <div className='d-flex align-items-center justify-content-center flex-wrap card col-11 mx-5 my-3 py-3 bg-light'>
           <div className='row d-flex align-items-center justify-content-around'>
-            <div className='col-12 back-to-catalog my-3' onClick={this.handleBackClick}><i className='fas fa-chevron-left'></i>{' Back to catalog'}</div>
+            <div
+              className='col-12 back-to-catalog my-3 cursor-pointer'
+              onClick={this.handleBackClick}
+            >
+              <i className='fas fa-chevron-left'></i>{' Back to catalog'}
+            </div>
             <img src={this.state.product.image} alt={this.state.product.name} className='image-detail'/>
             <div className='col-4'>
               <h3>{this.state.product.name}</h3>
