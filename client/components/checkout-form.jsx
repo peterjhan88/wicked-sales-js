@@ -14,12 +14,18 @@ export default class CheckoutForm extends React.Component {
 
   handlePlaceOrder(event) {
     event.preventDefault();
-    var orderDetails = {};
-    orderDetails.name = this.state.name;
-    orderDetails.creditCard = this.state.creditCard.replace(' ', '');
-    orderDetails.shippingAddress = this.state.shippingAddress;
-    this.props.placeOrder(orderDetails);
-    this.props.setView('catalog', {});
+    if (this.goodToSubmit()) {
+      var orderDetails = {};
+      orderDetails.name = this.state.name;
+      orderDetails.creditCard = this.state.creditCard.replace(' ', '');
+      orderDetails.shippingAddress = this.state.shippingAddress;
+      this.props.placeOrder(orderDetails);
+      this.props.setView('catalog', {});
+      return true;
+    }
+    // eslint-disable-next-line no-console
+    console.log('Invalid Inputs! Either input values are invalid or no items in the cart!');
+    return false;
   }
 
   handleChange(event) {
@@ -42,6 +48,15 @@ export default class CheckoutForm extends React.Component {
       return false;
     }
     return creditCard.match(/\d/g).join('').length === 16;
+  }
+
+  goodToSubmit() {
+    return (
+      this.validateInputs(this.state.name) &&
+      this.validateInputs(this.state.shippingAddress) &&
+      this.validateCreditCard(this.state.creditCard) &&
+      this.props.numberOfItemsInCart !== 0
+    );
   }
 
   render() {
@@ -107,6 +122,9 @@ export default class CheckoutForm extends React.Component {
         </form>
         <div className='col-10 d-flex justify-content-start'>
           <button className='btn btn-info' onClick={this.handlePlaceOrder}>Place Order</button>
+          {
+
+          }
         </div>
       </div>
     );
